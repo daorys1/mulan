@@ -1,2 +1,4 @@
-# mulan
-re-implementation of mulan(also known as muLang or μ language)
+# 声明
+本项目是木兰语言的重新实现，使用的所有参考信息均从网络公开资料中合法获得。
+作者本人不属于任何公司、集体。本项目使用GNU通用公共许可证。对任何人使用此项目产生的任何后果概不负责
+
