@@ -1,6 +1,7 @@
-# uncompyle6 version 3.6.2
+# decompyle3 version 3.3.2
 # Python bytecode 3.7 (3394)
-# Decompiled from: Python 3.7.4 (tags/v3.7.4:e09359112e, Jul  8 2019, 20:34:20) [MSC v.1916 64 bit (AMD64)]
+# Decompiled from: Python 3.8.1 (default, Jan  3 2020, 22:44:00) 
+# [GCC 8.3.0]
 # Embedded file name: ulang\codegen\blockly.py
 # Size of source mod 2**32: 82682 bytes
 import ast, sys
@@ -22,7 +23,9 @@ def dump(ast):
 
 
 class CodeGen(ast.NodeVisitor):
-    r"""'\n    A simple python ast to blockly xml converter.\n    '"""
+    """
+    A simple python ast to blockly xml converter.
+    """
 
     def __init__(self):
         self.ast2xml_ = {}
@@ -180,6 +183,8 @@ class CodeGen(ast.NodeVisitor):
                 self.ast2xml_[assign] = block
             if isinstance(target, ast.Tuple):
                 if not (isinstance(assign.value, ast.Tuple) and len(assign.value.elts) == len(target.elts)):
+                    pass
+                else:
                     raise AssertionError
                 elts = assign.value.elts
                 for i in range(len(target.elts)):
@@ -206,6 +211,8 @@ class CodeGen(ast.NodeVisitor):
 
     def visit_Compare(self, cmp):
         if not (len(cmp.ops) == 1 and len(cmp.comparators) == 1):
+            pass
+        else:
             raise AssertionError
         root = self.add_block(cmp, 'logic_compare')
         opc = cmp.ops[0].__class__.__name__.upper()

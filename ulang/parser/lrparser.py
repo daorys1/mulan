@@ -1,6 +1,7 @@
-# uncompyle6 version 3.6.2
+# decompyle3 version 3.3.2
 # Python bytecode 3.7 (3394)
-# Decompiled from: Python 3.7.4 (tags/v3.7.4:e09359112e, Jul  8 2019, 20:34:20) [MSC v.1916 64 bit (AMD64)]
+# Decompiled from: Python 3.8.1 (default, Jan  3 2020, 22:44:00) 
+# [GCC 8.3.0]
 # Embedded file name: ulang\parser\lrparser.py
 # Size of source mod 2**32: 82682 bytes
 from rply.errors import ParsingError
@@ -15,26 +16,30 @@ class LRParser:
         from rply.token import Token
         lookahead = None
         lookaheadstack = []
-        statestack = [
-         0]
-        symstack = [Token('$end', '$end')]
+        statestack = [0]
+        symstack = [Token("$end", "$end")]
+
         current_state = 0
         while True:
             if self.lr_table.default_reductions[current_state]:
                 t = self.lr_table.default_reductions[current_state]
-                current_state = self._reduce_production(t, symstack, statestack, state)
+                current_state = self._reduce_production(
+                    t, symstack, statestack, state
+                )
                 continue
-            elif lookahead is None:
+
+            if lookahead is None:
                 if lookaheadstack:
                     lookahead = lookaheadstack.pop()
-            else:
-                try:
-                    lookahead = next(tokenizer)
-                except StopIteration:
-                    lookahead = None
+                else:
+                    try:
+                        lookahead = next(tokenizer)
+                    except StopIteration:
+                        lookahead = None
 
                 if lookahead is None:
-                    lookahead = Token('$end', '$end')
+                    lookahead = Token("$end", "$end")
+
             ltype = lookahead.gettokentype()
             if ltype in self.lr_table.lr_action[current_state]:
                 t = self.lr_table.lr_action[current_state][ltype]
@@ -44,12 +49,13 @@ class LRParser:
                     symstack.append(lookahead)
                     lookahead = None
                     continue
+                elif t < 0:
+                    current_state = self._reduce_production(
+                        t, symstack, statestack, state
+                    )
+                    continue
                 else:
-                    if t < 0:
-                        current_state = self._reduce_production(t, symstack, statestack, state)
-                        continue
-                    else:
-                        n = symstack[(-1)]
+                    n = symstack[-1]
                     return n
             elif self.error_handler is not None:
                 if state is None:

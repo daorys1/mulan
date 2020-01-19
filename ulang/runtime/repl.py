@@ -1,6 +1,7 @@
-# uncompyle6 version 3.6.2
+# decompyle3 version 3.3.2
 # Python bytecode 3.7 (3394)
-# Decompiled from: Python 3.7.4 (tags/v3.7.4:e09359112e, Jul  8 2019, 20:34:20) [MSC v.1916 64 bit (AMD64)]
+# Decompiled from: Python 3.8.1 (default, Jan  3 2020, 22:44:00) 
+# [GCC 8.3.0]
 # Embedded file name: ulang\runtime\repl.py
 # Size of source mod 2**32: 82682 bytes
 import sys, cmd
@@ -18,6 +19,8 @@ def is_close(source):
      'FOR', 'LOOP', 'WHILE',
      'IF', 'ELIF', 'ELSE',
      'TRY', 'CATCH', 'FINALLY'}
+    unmatched_sum = 0
+    unclosed_sum = 0
     if len(source) > 1:
         if source[(-2)] == '\\':
             return False
@@ -52,7 +55,7 @@ def is_close(source):
         if unclosed_sum > 0:
             if unmatched_sum == 0:
                 if last[1] == 'NEWLINE':
-                    if last[0] == 'NEWLINE' or last[0] == ';':
+                    if (last[0] == 'NEWLINE' or last[0]) == ';':
                         pass
                     return True
     return unclosed_sum == 0 and unmatched_sum == 0
@@ -71,7 +74,9 @@ def input_swallowing_interrupt(_input):
 
 
 class Repl(cmd.Cmd):
-    r"""'\n    A simple wrapper for REPL using the python cmd module.\n    '"""
+    """
+    A simple wrapper for REPL using the python cmd module.
+    """
 
     def __init__(self, ps1='> ', ps2='>> ', globals=None, locals=None):
         super().__init__()
@@ -105,21 +110,20 @@ class Repl(cmd.Cmd):
                 return
             try:
                 try:
-                    try:
-                        node = self.parser.parse('___=(%s);__print__(___)' % self.stmt, '<STDIN>')
-                    except Exception:
-                        node = self.parser.parse(self.stmt, '<STDIN>')
+                    node = self.parser.parse('___=(%s);__print__(___)' % self.stmt, '<STDIN>')
+                except Exception:
+                    node = self.parser.parse(self.stmt, '<STDIN>')
 
-                    code = compile(node, '<STDIN>', 'exec')
-                    exec(code, self.globals, self.locals)
-                except SystemExit:
-                    sys.exit()
-                except BaseException as e:
-                    try:
-                        sys.stderr.write('%s: %s\n' % (e.__class__.__name__, str(e)))
-                    finally:
-                        e = None
-                        del e
+                code = compile(node, '<STDIN>', 'exec')
+                exec(code, self.globals, self.locals)
+            except SystemExit:
+                sys.exit()
+            except BaseException as e:
+                try:
+                    sys.stderr.write('%s: %s\n' % (e.__class__.__name__, str(e)))
+                finally:
+                    e = None
+                    del e
 
             finally:
                 self.stmt = ''
@@ -147,7 +151,6 @@ def repl(ps1='> ', ps2='>> ', globals=None):
     if not globals:
         globals = create_globals(fname='<STDIN>')
     globals['globals'] = lambda : print('\n'.join([' %s (%s)' % (k, v.__class__.__name__) for k, v in globals.items() if k != '__builtins__' if k != '___']))
-    globals['help'] = lambda *args:     if not args:
-print('\n'.join(info)) # Avoid dead code: help(*args)
+    globals['help'] = lambda *args: print('\n'.join(info)) if not args else print()
     Repl(ps1, ps2, globals).cmdloop("Welcome to ulang's REPL..\nType 'help' for more informations.")
     sys.exit(0)

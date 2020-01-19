@@ -1,6 +1,7 @@
-# uncompyle6 version 3.6.2
+# decompyle3 version 3.3.2
 # Python bytecode 3.7 (3394)
-# Decompiled from: Python 3.7.4 (tags/v3.7.4:e09359112e, Jul  8 2019, 20:34:20) [MSC v.1916 64 bit (AMD64)]
+# Decompiled from: Python 3.8.1 (default, Jan  3 2020, 22:44:00) 
+# [GCC 8.3.0]
 # Embedded file name: ulang\parser\core.py
 # Size of source mod 2**32: 82682 bytes
 from rply import Token
@@ -9,13 +10,18 @@ from rply.errors import LexingError
 from ulang.parser.lexer import RULES, lexer
 from ulang.parser.error import SyntaxError
 from ulang.parser.lrparser import LRParser
-from ulang.parser.parsergenerator import ParserGenerator
+from rply.parsergenerator import ParserGenerator
 from ulang.codegen.blockly import randomString
 import ast
 from copy import deepcopy
 
 class NameFixPass(ast.NodeTransformer):
-    """"\\n    A python NodeVisitor which traverses the generated ast\\n    to fix the signature of class methods by adding the\\n    implicit argument 'self' and also convert the function\\n    name of the class constructors..\\n    \""""
+    """
+    A python NodeVisitor which traverses the generated ast
+    to fix the signature of class methods by adding the
+    implicit argument 'self' and also convert the function
+    name of the class constructors..
+    """
 
     def __init__(self, filename):
         self.filename = filename
@@ -78,7 +84,10 @@ class NameFixPass(ast.NodeTransformer):
 
 
 class AnnoFuncInsertPass(ast.NodeTransformer):
-    r"""'\n    Visit all ast to insert each anonymous function\n    just before where it has been referenced.\n    '"""
+    """
+    Visit all ast to insert each anonymous function
+    just before where it has been referenced.
+    """
 
     def __init__(self, anonfuncs):
         self.anonfuncs_ = anonfuncs
@@ -125,7 +134,10 @@ class AnnoFuncInsertPass(ast.NodeTransformer):
 
 
 class Parser:
-    r"""'\n    A simple LR(1) parser to parse the source code of µ\n    and yield the python ast for later using..\n    '"""
+    """
+    A simple LR(1) parser to parse the source code of mu
+    and yield the python ast for later using..
+    """
 
     def __init__(self, lexer=lexer):
         self.lexer_ = lexer
@@ -818,18 +830,18 @@ class Parser:
             operator = ast.Sub()
         elif operator == '*':
             operator = ast.Mult()
-        if operator == '<<':
+        elif operator == '<<':
             operator = ast.LShift()
         elif operator == '>>':
             operator = ast.RShift()
+        elif operator == '&':
+            operator = ast.BitAnd()
+        elif operator == '|':
+            operator = ast.BitOr()
+        elif operator == '**':
+            operator = ast.Pow()
         else:
-            if operator == '&':
-                operator = ast.BitAnd()
-            elif operator == '|':
-                operator = ast.BitOr()
-            else:
-                operator = ast.Pow()
-
+            breakpoint()
         return ast.BinOp((p[0]),
           operator, (p[2]), lineno=(self.getlineno(p)),
           col_offset=(self.getcolno(p)))
@@ -1480,8 +1492,8 @@ class Parser:
               lineno=(self.getlineno(p)),
               col_offset=(self.getcolno(p)))
         else:
-            p[-1] = isinstance(p[(-1)], list) or [
-             p[(-1)]]
+            if not isinstance(p[(-1)], list):
+                p[-1] = []
 
         return ast.If(test=(p[1]),
           body=(p[2]),

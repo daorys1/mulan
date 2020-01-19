@@ -1,6 +1,7 @@
-# uncompyle6 version 3.6.2
+# decompyle3 version 3.3.2
 # Python bytecode 3.7 (3394)
-# Decompiled from: Python 3.7.4 (tags/v3.7.4:e09359112e, Jul  8 2019, 20:34:20) [MSC v.1916 64 bit (AMD64)]
+# Decompiled from: Python 3.8.1 (default, Jan  3 2020, 22:44:00) 
+# [GCC 8.3.0]
 # Embedded file name: ulang\codegen\ulgen.py
 # Size of source mod 2**32: 82682 bytes
 """
@@ -55,7 +56,10 @@ def to_source(node, indent_with='  '):
 
 
 class ULangGenerator(NodeVisitor):
-    r"""'\n    This visitor is able to transform a well formed syntax tree into\n    the equivalent ulang source code.\n    '"""
+    """
+    This visitor is able to transform a well formed syntax tree into
+    the equivalent ulang source code.
+    """
 
     def __init__(self, indent_with, add_line_info=False, header=None):
         self.result = []

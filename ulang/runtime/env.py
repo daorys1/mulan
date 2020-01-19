@@ -1,6 +1,7 @@
-# uncompyle6 version 3.6.2
+# decompyle3 version 3.3.2
 # Python bytecode 3.7 (3394)
-# Decompiled from: Python 3.7.4 (tags/v3.7.4:e09359112e, Jul  8 2019, 20:34:20) [MSC v.1916 64 bit (AMD64)]
+# Decompiled from: Python 3.8.1 (default, Jan  3 2020, 22:44:00) 
+# [GCC 8.3.0]
 # Embedded file name: ulang\runtime\env.py
 # Size of source mod 2**32: 82682 bytes
 import ast, dis, imp, math, os, sys, getopt, time, threading, trace
@@ -24,8 +25,8 @@ def load_ulang_module(name, globals, fromlist=(), level=0):
         raise ModuleNotFoundError(name)
     modules = []
     tail = name
-    module_name = lambda name:     if modules:
-modules[(-1)].__name__ + '.' + name # Avoid dead code: name
+    module_name = lambda name: modules[(-1)].__name__ + '.' + name if modules else ""
+
     index = 0
     while index != -1:
         index = tail.find('.')
@@ -60,7 +61,9 @@ modules[(-1)].__name__ + '.' + name # Avoid dead code: name
 
 
 class Thread(threading.Thread):
-    r"""'\n    A traced thread wrapper.\n    '"""
+    """
+    A traced thread wrapper.
+    """
 
     def __init__(self, *args, **kw):
         (threading.Thread.__init__)(self, *args, **kw)
@@ -145,7 +148,7 @@ def create_globals(argv=[], fname=''):
         if isinstance(x, tuple):
             return container_to_str(x)
         if isinstance(x, dict):
-            return container_to_str(x, '{', '}', lambda k, c: '%s: %s' % (k, c[k]))
+            return container_to_str(x, '{', '}', lambda c, k: '%s: %s' % (k, c[k]))
         if isinstance(x, set):
             return container_to_str(x, '{', '}')
         return str(x)
@@ -230,9 +233,9 @@ def create_globals(argv=[], fname=''):
      'tuple':lambda *args: args, 
      'char':chr, 
      'ord':ord, 
-     'bytes':lambda encoding, s='ascii': bytes(s, encoding), 
+     'bytes':lambda s, encoding='ascii': bytes(s, encoding), 
      'typeof':lambda x: x.__class__.__name__, 
-     'isa':lambda t, x: isinstance(x, t), 
+     'isa':lambda x, t: isinstance(x, t), 
      'max':max, 
      'min':min, 
      'map':map, 
