@@ -1014,6 +1014,7 @@ class Parser:
     @pg_.production('primary_expr : ( name , param_list_not_empty )')
     def primary_expr_(self, p):
         args = ast.arguments(args=[], kwonlyargs=[], kw_defaults=[], defaults=[], vararg=None,
+          posonlyargs=[],
           kwarg=None,
           lineno=(self.getlineno(p)),
           col_offset=(self.getcolno(p)))
@@ -1151,6 +1152,7 @@ class Parser:
             p[0] = p[0].value
         if isinstance(p[0], ast.Name):
             args = ast.arguments(args=[], kwonlyargs=[], kw_defaults=[], defaults=[], vararg=None,
+              posonlyargs=[],
               kwarg=None,
               lineno=(self.getlineno(p)),
               col_offset=(self.getcolno(p)))
@@ -1419,6 +1421,7 @@ class Parser:
     def param_list(self, p=[]):
         if not p:
             return ast.arguments(args=[], kwonlyargs=[], kw_defaults=[], defaults=[], vararg=None,
+              posonlyargs=[],
               kwarg=None)
         return self.legalize_arguments(p[0])
 
